@@ -1,0 +1,12 @@
+{
+  "name": "demo-rds-js",
+  "version": "0.0.1",
+  "description": "Testing some stuff on MySql/RDS/Lambda",
+  "main": "app.js",
+  "author": "Cyril Hamidechi",
+  "license": "MIT",
+  "dependencies": {
+    "async": "^2.6.0",
+    "mysql": "^2.15.0"
+  }
+}
