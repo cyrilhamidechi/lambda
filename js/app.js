@@ -23,7 +23,13 @@ exports.handler = (event, context, callback) => {
     function (callback)
     {
       if(!mysqlClient) {
-        return callback("There's no MySql client");
+        callback("There's no MySql client");
+        return;
+      }
+
+      if(!event || !event.data) {
+        callback(null, null, null); //errors, results, fields
+        return;
       }
 
       var write, data;
@@ -55,8 +61,8 @@ exports.handler = (event, context, callback) => {
       apigw.add("results", results, "write");
       apigw.add("fields", fields, "write");
 
-      if((!fields && !results) || event.data.select) {
-        empid = event.data.select ? event.data.select.empid : null;
+      if((!fields && !results) || (event && event.data && event.data.select)) {
+        empid = (event && event.data && event.data.select) ? event.data.select.empid : null;
         var s = mysqlClient.query("SELECT * FROM Employee3" + (empid ? " WHERE empid = ? LIMIT 1" : "") + ";", [empid], callback);
         apigw.add("query", s.sql, "select");
         return;

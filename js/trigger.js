@@ -2,7 +2,7 @@ const h = require('./app').handler;
 
 h({
 //  "event":"somedetails",
-  "httpVerb": "PUT",
+/*  "httpVerb": "PUT",
   "data": {
     "empid": 123,
     "name": "Pierpoljacky",
@@ -14,10 +14,10 @@ h({
         }
       }
     },
-/*    "select": {
+    "select": {
       empid: 123
-    }*/
-  }
+    }
+  }*/
 },{
   "my":"context"
 },(err, res)=>{
