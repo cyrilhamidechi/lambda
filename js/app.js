@@ -4,7 +4,7 @@ Next: abstract CRUD layer and apigw interactions to put here only business aspec
 
 const async = require('async');
 const getMysqlClient = require('mysql').createConnection;
-const mysqlCfg = require('./mysql-cfg');
+const mysqlCfg = require('./mysql.cfg');
 const apigw = require('./apigw-helper');
 
 var mysqlClient;
