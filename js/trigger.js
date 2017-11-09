@@ -40,7 +40,8 @@ const events = {
 var contexts = [
   {
     "my":"context",
-    "noStringifyBody": true
+    "noStringifyBody": true,
+    "from": "custom"
   },
   {
     "another":"ctx"

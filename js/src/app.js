@@ -6,12 +6,15 @@ const async = require('async');
 const getMysqlClient = require('mysql').createConnection;
 const mysqlCfg = require('./mysql.cfg');
 const apigw = require('./apigw-helper');
+const eventMapping = require('./event-mapping');
 
 apigw.init();
 
 var mysqlClient;
 
 exports.handler = (event, context, callback) => {
+
+  eventMapping.map(event, context);
 
   console.log('Received event:', JSON.stringify(event, null, 2));
   console.log('Received contex:', JSON.stringify(context, null, 2));
@@ -41,17 +44,17 @@ exports.handler = (event, context, callback) => {
 
       var write, data;
 
-      if('POST' == event.httpVerb) {
+      if(eventMapping.isPost()) {
         write = "INSERT INTO Employee3 SET ?;"
         data = {Name: event.data.name, Details: JSON.stringify(event.data.details), empid: event.data.empid};
       }
 
-      if('PUT' == event.httpVerb) {
+      if(eventMapping.isPut()) {
         write = "UPDATE Employee3 SET ? WHERE empid = ? LIMIT 1;";
         data = [{Name: event.data.name, Details: JSON.stringify(event.data.details)}, event.data.empid];
       }
 
-      if('DELETE' == event.httpVerb) {
+      if(eventMapping.isDelete()) {
         write = "DELETE FROM Employee3 WHERE empid = ? LIMIT 1;";
         data = [event.data.empid];
       }

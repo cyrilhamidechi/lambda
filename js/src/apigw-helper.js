@@ -1,7 +1,7 @@
 module.exports = {
-  stringifyBody: true,
   init: function()
   {
+    this.stringifyBody = true;
     this.res = {
       statusCode: 200,
       headers: {
