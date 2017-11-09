@@ -1,10 +1,11 @@
 module.exports = {
+  stringifyBody: true,
   init: function()
   {
     this.res = {
       statusCode: 200,
       headers: {
-        "Content-Type": "*/*"
+        "Content-Type": "application/json"
       },
       body: {
         "data": {},
@@ -14,8 +15,17 @@ module.exports = {
   },
   output: function()
   {
-    this.res.body = JSON.stringify(this.res.body);
-    return this.res;
+    try {
+      if(this.stringifyBody) {
+        this.res.body = JSON.stringify(this.res.body);
+      }
+      return this.res;
+    } catch(e) {
+      return {
+        statusCode: 500,
+        body: e.stack.toString()
+      };
+    }
   },
   addError: function(error)
   {

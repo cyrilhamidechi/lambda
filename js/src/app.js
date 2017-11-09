@@ -14,6 +14,11 @@ var mysqlClient;
 exports.handler = (event, context, callback) => {
 
   console.log('Received event:', JSON.stringify(event, null, 2));
+  console.log('Received contex:', JSON.stringify(context, null, 2));
+
+  if(context && context.noStringifyBody) {
+    apigw.stringifyBody  = false;
+  }
 
   async.waterfall([
     function (callback)
