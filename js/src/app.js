@@ -7,6 +7,8 @@ const getMysqlClient = require('mysql').createConnection;
 const mysqlCfg = require('./mysql.cfg');
 const apigw = require('./apigw-helper');
 
+apigw.init();
+
 var mysqlClient;
 
 exports.handler = (event, context, callback) => {

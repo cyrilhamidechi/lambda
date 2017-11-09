@@ -1,16 +1,20 @@
 module.exports = {
-  "res": {
-    "statusCode": 200,
-    "headers": {
-      "Content-Type": "*/*"
-    },
-    "body": {
-      "data": {},
-      "errors": []
-    }
+  init: function()
+  {
+    this.res = {
+      statusCode: 200,
+      headers: {
+        "Content-Type": "*/*"
+      },
+      body: {
+        "data": {},
+        "errors": []
+      }
+    };
   },
   output: function()
   {
+    this.res.body = JSON.stringify(this.res.body);
     return this.res;
   },
   addError: function(error)

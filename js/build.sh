@@ -3,9 +3,9 @@
 [ -d dist ] || mkdir dist
 rm -Rf dist/*
 
-cp ./*.js ./dist/
-cp package.json ./dist/
-cp private/*.cfg ./dist
+cp ./src/*.js ./dist/
+cp ./src/package.json ./dist/
+cp ./private/*.cfg ./dist
 
 cd dist/
 yarn install

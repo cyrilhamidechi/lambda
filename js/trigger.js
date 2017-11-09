@@ -1,4 +1,4 @@
-const h = require('./app').handler;
+const h = require('./src/app').handler;
 
 h({
 //  "event":"somedetails",
