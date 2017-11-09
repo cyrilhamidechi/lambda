@@ -1,5 +1,0 @@
-- rm -Rf dist/*
-- mv *.js, package.json in dist
-- yarn install
-- zip -r app.zip ./*
-- bash? npm?

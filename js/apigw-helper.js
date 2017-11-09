@@ -4,8 +4,10 @@ module.exports = {
     "headers": {
       "Content-Type": "*/*"
     },
-    "data": {},
-    "errors": []
+    "body": {
+      "data": {},
+      "errors": []
+    }
   },
   output: function()
   {
@@ -13,7 +15,7 @@ module.exports = {
   },
   addError: function(error)
   {
-    this.res.errors.push(error);
+    this.res.body.errors.push(error);
     this.setStatusCode(400);
   },
   setStatusCode: function(code)
@@ -30,14 +32,14 @@ module.exports = {
   },
   addData: function(key, value, container)
   {
-    if(container && !this.res.data[container]) {
-      this.res.data[container] = {};
+    if(container && !this.res.body.data[container]) {
+      this.res.body.data[container] = {};
     }
     if(value) {
       if(container) {
-        this.res.data[container][key] = value;
+        this.res.body.data[container][key] = value;
       } else {
-        this.res.data[key] = value;
+        this.res.body.data[key] = value;
      }
     }
   }
