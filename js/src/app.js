@@ -12,11 +12,25 @@ var mysqlClient;
 
 exports.handler = (event, context, callback) => {
 
-  evt.normalize(event);
+  if(!event) {
+    callback("Event is missing");
+    return;
+  }
 
-  console.log('Received event:', JSON.stringify(event, null, 2));
-  console.log('Normalized event': JSON.stringify(event, null, 2));
-  console.log('Received contex:', JSON.stringify(context, null, 2));
+  evt.normalize(event);
+  if(evt.is("gwreq") && event.pathParameters.empid) {
+    evt.setObjectId(event.pathParameters.empid);
+    evt.setDetails({name: "hey", details: "ho"});
+  } else if(evt.is("s3")) {
+    evt.setDetails({name: "awesome", details: "yeah"});
+  } else if(evt.is("custom") && event.data && event.data.empid) {
+    evt.setObjectId(event.data.empid);
+    evt.setDetails({name: event.data.name, details: event.data.details});
+  }
+
+//  console.log('Received event:', JSON.stringify(event, null, 2));
+  console.log('Normalized event:', JSON.stringify(evt.event, null, 2));
+//  console.log('Received contex:', JSON.stringify(context, null, 2));
 
   if(context && context.noStringifyBody) {
     apigw.stringifyBody  = false;
@@ -36,29 +50,24 @@ exports.handler = (event, context, callback) => {
         return;
       }
 
-      if(!event || !event.data) {
-        callback(null, null, null); //errors, results, fields
-        return;
-      }
-
       var write, data;
 
       //only triggered by a S3 put event
       if(evt.is("s3") && evt.isCreate()) {
         write = "INSERT INTO Employee3 SET ?;"
-        data = {Name: event.data.name, Details: JSON.stringify(event.data.details), empid: event.data.empid};
+        data = {Name: evt.getDetail("name"), Details: JSON.stringify(evt.getDetails("details")), empid: evt.getObjectId()};
       }
 
       //only triggered by an API Gateway put event
       if(evt.is("gwreq") && evt.isUpdate()) {
         write = "UPDATE Employee3 SET ? WHERE empid = ? LIMIT 1;";
-        data = [{Name: event.data.name, Details: JSON.stringify(event.data.details)}, event.data.empid];
+        data = [{Name: evt.getDetail("name"), Details: JSON.stringify(evt.getDetails("details"))}, evt.getObjectId()];
       }
 
       //triggered either by a S3 delete event, either by an API Gateway delete event
       if(evt.isDelete() && (evt.is("s3") || evt.is("gwreq"))) {
         write = "DELETE FROM Employee3 WHERE empid = ? LIMIT 1;";
-        data = [event.data.empid];
+        data = [evt.getObjectId()];
         // if this action is from gw, a S3 delete action must be triggered
       }
 

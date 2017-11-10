@@ -3,10 +3,10 @@ module.exports = {
 
   normalize: function(event)
   {
-    this.raw = event;
-    this.actionsMap = {};
-    this.firstRecord = (this.raw.Records && this.raw.Record.length > 0) ? this.raw.Record[0] : {};
     this.event = {};
+    this.actionsMap = {};
+    this.first = (event.Records && event.Records.length > 0) ? event.Records[0] : {};
+    this.raw = event;
 
     var normalized = false;
 
@@ -18,20 +18,20 @@ module.exports = {
     if(this.raw.awslogs) {
       normalized = this.normalizeLogs();
     }
-    if(this.firstRecord.EventSource && "aws:sns"==this.firstRecord.EventSource) {
+    if(this.first.EventSource && "aws:sns"==this.first.EventSource) {
       normalized = this.normalizeSNS();
     }
-    if(this.firstRecord.eventSource && "aws:dynamodb"==this.firstRecord.eventSource) {
+    if(this.first.eventSource && "aws:dynamodb"==this.first.eventSource) {
       normalized = this.normalizeDynamoDB();
     }
     if(this.raw.eventType && "SyncTrigger"==this.raw.eventType) {
       normalized = this.normalizeCognitoSync();
     }
-    if(this.firstRecord.eventSource && "aws:s3"==this.firstRecord.eventSource) {
+    if(this.first.eventSource && "aws:s3"==this.first.eventSource) {
       normalized = this.normalizeS3();
     }
     if(this.raw.httpMethod && this.raw.path && this.raw.requestContext) {
-      normalized = this.normalizeGwRquest();
+      normalized = this.normalizeGwRequest();
     }
     if(this.raw.statusCode && this.raw.headers && this.raw.body) {
       normalized = this.normalizeGwResponse();
@@ -82,7 +82,8 @@ module.exports = {
   normalizeS3: function()
   {
     this.event.type = "s3";
-    this.event.action = this.firstRecord.eventName;
+    this.event.objectId = this.first.s3.bucket.name + "/" + this.first.s3.object.key;
+    this.event.action = this.first.eventName;
     this.actionsMap = {
       "ObjectCreated:Put": "update",
       "ObjectRemoved:Delete": "delete"
@@ -93,7 +94,7 @@ module.exports = {
   {
     this.event.type = "gwreq"
     this.event.action = this.raw.httpMethod.toUpperCase();
-    this.actionsMap = this.getHttpMapping();
+    this.actionsMap = this.getHTTPMapping();
     return true;
   },
   normalizeGwResponse: function()
@@ -108,7 +109,7 @@ module.exports = {
     if(!this.raw.type) {
       this.event.type = "custom";
       this.event.action = this.raw.httpVerb.toUpperCase();
-      this.actionsMap = this.getHttpMapping();
+      this.actionsMap = this.getHTTPMapping();
       return true;
     }
 
@@ -149,16 +150,35 @@ module.exports = {
   {
     return this.isAction("delete");
   },
-  getType: function(){
+  getType: function()
+  {
     return this.event.type;
   },
-  getAction: function(){
+  getAction: function()
+  {
     return this.event.action;
   },
-  getRaw: function(){
+  setObjectId(id)
+  {
+    this.event.objectId = id;
+  },
+  getObjectId()
+  {
+    return this.event.objectId;
+  },
+  getRaw: function()
+  {
     return this.raw;
-  }
-  getHttpMapping: function()
+  },
+  setDetails: function(details)
+  {
+    this.event.details = details;
+  },
+  getDetail: function(key)
+  {
+    return this.event.details[key];
+  },
+  getHTTPMapping: function()
   {
     return {
       "POST": "create",

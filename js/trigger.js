@@ -93,7 +93,7 @@ const events = {
             "key": "HappyFace.jpg"
           },
           "bucket": {
-            "arn": bucketarn,
+            "arn": "bucketarn",
             "name": "sourcebucket",
             "ownerIdentity": {
               "principalId": "EXAMPLE"
@@ -132,7 +132,7 @@ const events = {
         "oldValue": "oldValue2",
         "newValue": "newValue2",
         "op": "replace"
-      },..
+      }
     }
   },
 //SNS event
@@ -140,7 +140,7 @@ const events = {
     "Records": [
       {
         "EventVersion": "1.0",
-        "EventSubscriptionArn": eventsubscriptionarn,
+        "EventSubscriptionArn": "eventsubscriptionarn",
         "EventSource": "aws:sns",
         "Sns": {
           "SignatureVersion": "1",
@@ -161,7 +161,7 @@ const events = {
           },
           "Type": "Notification",
           "UnsubscribeUrl": "EXAMPLE",
-          "TopicArn": topicarn,
+          "TopicArn": "topicarn",
           "Subject": "TestInvoke"
         }
       }
