@@ -1,22 +1,21 @@
-/*
-Next: abstract CRUD layer and apigw interactions to put here only business aspects (refactoring will depend on other business cases)
-*/
-
 const async = require('async');
 const getMysqlClient = require('mysql').createConnection;
 const mysqlCfg = require('./mysql.cfg');
-const apigw = require('./apigw-helper');
-const eventMapping = require('./event-mapping');
+
+const evt = require('./event-normalizer'); // Lambda's input
+const apigw = require('./apigw-helper'); // Lambda's output
+
 
 apigw.init();
-
 var mysqlClient;
+
 
 exports.handler = (event, context, callback) => {
 
-  eventMapping.map(event, context);
+  evt.normalize(event);
 
   console.log('Received event:', JSON.stringify(event, null, 2));
+  console.log('Normalized event': JSON.stringify(event, null, 2));
   console.log('Received contex:', JSON.stringify(context, null, 2));
 
   if(context && context.noStringifyBody) {
@@ -44,19 +43,23 @@ exports.handler = (event, context, callback) => {
 
       var write, data;
 
-      if(eventMapping.isPost()) {
+      //only triggered by a S3 put event
+      if(evt.is("s3") && evt.isCreate()) {
         write = "INSERT INTO Employee3 SET ?;"
         data = {Name: event.data.name, Details: JSON.stringify(event.data.details), empid: event.data.empid};
       }
 
-      if(eventMapping.isPut()) {
+      //only triggered by an API Gateway put event
+      if(evt.is("gwreq") && evt.isUpdate()) {
         write = "UPDATE Employee3 SET ? WHERE empid = ? LIMIT 1;";
         data = [{Name: event.data.name, Details: JSON.stringify(event.data.details)}, event.data.empid];
       }
 
-      if(eventMapping.isDelete()) {
+      //triggered either by a S3 delete event, either by an API Gateway delete event
+      if(evt.isDelete() && (evt.is("s3") || evt.is("gwreq"))) {
         write = "DELETE FROM Employee3 WHERE empid = ? LIMIT 1;";
         data = [event.data.empid];
+        // if this action is from gw, a S3 delete action must be triggered
       }
 
       if(write) {
@@ -71,8 +74,12 @@ exports.handler = (event, context, callback) => {
       apigw.add("results", results, "write");
       apigw.add("fields", fields, "write");
 
-      if((!fields && !results) || (event && event.data && event.data.select)) {
-        empid = (event && event.data && event.data.select) ? event.data.select.empid : null;
+      //Can be triggered:
+      // - by an API Gateway GET event (to all items or to a portion only)
+      // - by any of the previous API Gateway writes if there's an explicit "select" flag within the event
+//      if((!fields && !results) || (event && event.data && event.data.select)) {
+     if((evt.is("gwreq") || evt.is("custom")) && (evt.isRead() || (event.data && event.data.select))) {
+        empid = (event.data && event.data.select) ? event.data.select.empid : null;
         var s = mysqlClient.query("SELECT * FROM Employee3" + (empid ? " WHERE empid = ? LIMIT 1" : "") + ";", [empid], callback);
         apigw.add("query", s.sql, "select");
         return;

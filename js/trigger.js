@@ -183,7 +183,7 @@ const events = {
     ]
   },
 //Default event
-  default: {
+  custom1: {
 //    "event":"somedetails",
     "httpVerb": "PUT",
     "data": {
@@ -216,7 +216,7 @@ var contexts = [
 ];
 
 
-var event = events.default;
+var event = events.custom1;
 if(process.argv.length>2 && events[process.argv[2]]) {
   event = events[process.argv[2]];
 }
