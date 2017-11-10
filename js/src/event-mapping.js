@@ -3,6 +3,9 @@ module.exports = {
   {
     this.original = event;
     this.context = context;
+    this.event = {
+      event: "GET"
+    };
     if("custom" == this.context.from) {
       this.mapCustom();
     }
@@ -12,11 +15,11 @@ module.exports = {
   },
   mapCustom: function()
   {
-    this.event.httpMethod = this.original.httpVerb.toUpperCase();
+    this.event.method = this.original.httpVerb.toUpperCase();
   },
   mapS3: function()
   {
-    this.event.httpMethod = this.original.httpMethod.toUpperCase();
+    this.event.method = this.original.httpMethod.toUpperCase();
   },
   mapGw: function()
   {
@@ -24,18 +27,18 @@ module.exports = {
   },
   isGet: function()
   {
-    return "GET" == this.event.httpMethod;
+    return "GET" == this.event.method;
   },
   isPost: function()
   {
-    return "POST" == this.event.httpMethod;
+    return "POST" == this.event.method;
   },
   isPut: function()
   {
-    return "PUT" == this.event.httpMethod;
+    return "PUT" == this.event.method;
   },
   isDelete: function()
   {
-    return "DELETE" == this.event.httpMethod;
+    return "DELETE" == this.event.method;
   }
 }
