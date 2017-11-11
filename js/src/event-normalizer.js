@@ -3,7 +3,9 @@ module.exports = {
 
   normalize: function(event)
   {
-    this.event = {};
+    this.event = {
+      details: {}
+    };
     this.actionsMap = {};
     this.first = (event.Records && event.Records.length > 0) ? event.Records[0] : {};
     this.raw = event;
@@ -82,7 +84,8 @@ module.exports = {
   normalizeS3: function()
   {
     this.event.type = "s3";
-    this.event.objectId = this.first.s3.bucket.name + "/" + this.first.s3.object.key;
+    this.setDetail("id", this.first.s3.bucket.name + "/" + this.first.s3.object.key);
+    this.setDetail("details", this.first.s3);
     this.event.action = this.first.eventName;
     this.actionsMap = {
       "ObjectCreated:Put": "update",
@@ -95,6 +98,9 @@ module.exports = {
     this.event.type = "gwreq"
     this.event.action = this.raw.httpMethod.toUpperCase();
     this.actionsMap = this.getHTTPMapping();
+    if(this.raw.body) {
+      this.setDetails(JSON.parse(this.raw.body));
+    }
     return true;
   },
   normalizeGwResponse: function()
@@ -110,6 +116,7 @@ module.exports = {
       this.event.type = "custom";
       this.event.action = this.raw.httpVerb.toUpperCase();
       this.actionsMap = this.getHTTPMapping();
+      this.setDetails(this.raw.data);
       return true;
     }
 
@@ -174,9 +181,17 @@ module.exports = {
   {
     this.event.details = details;
   },
+  setDetail: function(key, value)
+  {
+    this.event.details[key] = value;
+  },
   getDetail: function(key)
   {
-    return this.event.details[key];
+    return this.event.details ? this.event.details[key] : null;
+  },
+  getDetails: function()
+  {
+    return this.event.details;
   },
   getHTTPMapping: function()
   {

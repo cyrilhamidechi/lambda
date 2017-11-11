@@ -18,14 +18,14 @@ exports.handler = (event, context, callback) => {
   }
 
   evt.normalize(event);
-  if(evt.is("gwreq") && event.pathParameters.empid) {
-    evt.setObjectId(event.pathParameters.empid);
-    evt.setDetails({name: "hey", details: "ho"});
+  if(evt.is("gwreq")) {
+    if(event.pathParameters && event.pathParameters.empid) {
+      evt.setDetail("id", event.pathParameters.empid);
+    }
   } else if(evt.is("s3")) {
-    evt.setDetails({name: "awesome", details: "yeah"});
-  } else if(evt.is("custom") && event.data && event.data.empid) {
-    evt.setObjectId(event.data.empid);
-    evt.setDetails({name: event.data.name, details: event.data.details});
+    // "s3" specific process here if needed
+  } else if(evt.is("custom") && event.data) {
+    // "custom" specific process here if needed
   }
 
 //  console.log('Received event:', JSON.stringify(event, null, 2));
@@ -55,19 +55,19 @@ exports.handler = (event, context, callback) => {
       //only triggered by a S3 put event
       if(evt.is("s3") && evt.isCreate()) {
         write = "INSERT INTO Employee3 SET ?;"
-        data = {Name: evt.getDetail("name"), Details: JSON.stringify(evt.getDetails("details")), empid: evt.getObjectId()};
+        data = {Name: evt.getDetail("name"), Details: JSON.stringify(evt.getDetail("details")), empid: evt.getDetail("id")};
       }
 
       //only triggered by an API Gateway put event
       if(evt.is("gwreq") && evt.isUpdate()) {
         write = "UPDATE Employee3 SET ? WHERE empid = ? LIMIT 1;";
-        data = [{Name: evt.getDetail("name"), Details: JSON.stringify(evt.getDetails("details"))}, evt.getObjectId()];
+        data = [{Name: evt.getDetail("name"), Details: JSON.stringify(evt.getDetail("details"))}, evt.getDetail("empid")];
       }
 
       //triggered either by a S3 delete event, either by an API Gateway delete event
       if(evt.isDelete() && (evt.is("s3") || evt.is("gwreq"))) {
         write = "DELETE FROM Employee3 WHERE empid = ? LIMIT 1;";
-        data = [evt.getObjectId()];
+        data = [evt.getDetail("id")];
         // if this action is from gw, a S3 delete action must be triggered
       }
 
