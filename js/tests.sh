@@ -13,6 +13,8 @@ echo "=== CUSTOM2 ===" >> $logs
 node trigger.js custom2 >> $logs
 echo "=== NOTEVENT ===" >> $logs
 node trigger.js notevent >> $logs
+echo "=== INVALID ===" >> $logs
+node trigger.js invalid >> $logs
 
 echo "=== GWGET ===" >> $logs
 node trigger.js gwget >> $logs

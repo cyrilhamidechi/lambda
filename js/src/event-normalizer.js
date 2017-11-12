@@ -114,7 +114,9 @@ module.exports = {
   {
     if(!this.raw.type) {
       this.event.type = "custom";
-      this.event.action = this.raw.httpVerb.toUpperCase();
+      if(this.raw.httpVerb) {
+        this.event.action = this.raw.httpVerb.toUpperCase();
+      }
       this.actionsMap = this.getHTTPMapping();
       this.setDetails(this.raw.data);
       return true;
