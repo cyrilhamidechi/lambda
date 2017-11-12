@@ -1,0 +1,12 @@
+{
+  "resource": "my/resource/path",
+  "path": "my/path/?with=param",
+  "httpMethod": "PUT",
+  "headers": {"x-some-custom-header":"amazing"},
+  "queryStringParameters": {"hip":"hop"},
+  "pathParameters":  {"mypath":"param"},
+  "stageVariables": {"where":"ami"},
+  "requestContext": {"some":"context"},
+  "isBase64Encoded": false,
+  "body": "{\"empid\":123,\"name\":\"Pierpoljacky\",\"details\":{\"field1\":\"value1\",\"nestobject\":{\"hip\":{\"pop\":\"heaps\"}}},\"select\":{\"empid\":123}}"
+}

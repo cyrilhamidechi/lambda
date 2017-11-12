@@ -20,10 +20,10 @@ exports.handler = (event, context, callback) => {
   evt.normalize(event);
   if(evt.is("gwreq")) {
     if(event.pathParameters && event.pathParameters.empid) {
-      evt.setDetail("id", event.pathParameters.empid);
+      evt.setDetail("empid", event.pathParameters.empid);
     }
   } else if(evt.is("s3")) {
-    // "s3" specific process here if needed
+      evt.setDetail("empid", evt.getDetail("id"));
   } else if(evt.is("custom") && event.data) {
     // "custom" specific process here if needed
   }
@@ -53,13 +53,14 @@ exports.handler = (event, context, callback) => {
       var write, data;
 
       //only triggered by a S3 put event
-      if(evt.is("s3") && evt.isCreate()) {
+      if(evt.is("s3") && evt.isUpdate()) {
         write = "INSERT INTO Employee3 SET ?;"
-        data = {Name: evt.getDetail("name"), Details: JSON.stringify(evt.getDetail("details")), empid: evt.getDetail("id")};
+        var details = evt.getDetail("details");
+        data = {Name: evt.getDetail("id"), Details: JSON.stringify({bucket: details.bucket, s3: details.s3}), empid: evt.getDetail("id")};
       }
 
       //only triggered by an API Gateway put event
-      if(evt.is("gwreq") && evt.isUpdate()) {
+      if((evt.is("gwreq") || evt.is("custom"))&& evt.isUpdate()) {
         write = "UPDATE Employee3 SET ? WHERE empid = ? LIMIT 1;";
         data = [{Name: evt.getDetail("name"), Details: JSON.stringify(evt.getDetail("details"))}, evt.getDetail("empid")];
       }
@@ -67,7 +68,7 @@ exports.handler = (event, context, callback) => {
       //triggered either by a S3 delete event, either by an API Gateway delete event
       if(evt.isDelete() && (evt.is("s3") || evt.is("gwreq"))) {
         write = "DELETE FROM Employee3 WHERE empid = ? LIMIT 1;";
-        data = [evt.getDetail("id")];
+        data = [evt.getDetail("empid")];
         // if this action is from gw, a S3 delete action must be triggered
       }
 

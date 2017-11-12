@@ -1,0 +1,18 @@
+{
+  "httpVerb": "PUT",
+  "data": {
+    "empid": 123,
+    "name": "Pierpoljacky",
+    "details": {
+      "field1": "value1",
+      "nestobject": {
+        "hip": {
+          "pop": "heaps"
+        }
+      }
+    },
+    "select": {
+      "empid": 123
+    }
+  }
+}

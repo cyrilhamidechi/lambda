@@ -1,0 +1,12 @@
+{
+  "resource": "my/resource/path",
+  "path": "my/path/?with=param",
+  "httpMethod": "DELETE",
+  "headers": {"x-some-custom-header":"amazing"},
+  "queryStringParameters": {"hip":"hop"},
+  "pathParameters":  {"mypath":"param"},
+  "stageVariables": {"where":"ami"},
+  "requestContext": {"some":"context"},
+  "isBase64Encoded": false,
+  "body": "{\"empid\":456,\"select\":true}"
+}
