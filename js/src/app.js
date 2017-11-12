@@ -55,28 +55,29 @@ exports.handler = (event, context, callback) => {
       //only triggered by a S3 put event
       if(evt.is("s3") && evt.isUpdate()) {
         write = "INSERT INTO Employee3 SET ?;"
-        var details = evt.getDetail("details");
+        const details = evt.getDetail("details");
         data = {Name: evt.getDetail("id"), Details: JSON.stringify({bucket: details.bucket, s3: details.s3}), empid: evt.getDetail("id")};
       }
 
       //only triggered by an API Gateway put event
-      if((evt.is("gwreq") || evt.is("custom"))&& evt.isUpdate()) {
+      if((evt.is("gwreq") || evt.is("custom")) && evt.isUpdate()) {
         write = "UPDATE Employee3 SET ? WHERE empid = ? LIMIT 1;";
-        data = [{Name: evt.getDetail("name"), Details: JSON.stringify(evt.getDetail("details"))}, evt.getDetail("empid")];
+        data = [{Name: evt.getDetail("name"), Details: JSON.stringify(evt.getDetail("details"))}, evt.getDetail("empid")+""];
       }
 
       //triggered either by a S3 delete event, either by an API Gateway delete event
       if(evt.isDelete() && (evt.is("s3") || evt.is("gwreq"))) {
         write = "DELETE FROM Employee3 WHERE empid = ? LIMIT 1;";
-        data = [evt.getDetail("empid")];
+        data = [evt.getDetail("empid")+""];
         // if this action is from gw, a S3 delete action must be triggered
       }
 
       if(write) {
-        var w = mysqlClient.query(write, data, callback);
+        const w = mysqlClient.query(write, data, callback);
         apigw.add("query", w.sql, "write");
         return;
       }
+
       callback(null, null, null); //errors, results, fields
     },
     function (results, fields, callback)
@@ -87,10 +88,10 @@ exports.handler = (event, context, callback) => {
       //Can be triggered:
       // - by an API Gateway GET event (to all items or to a portion only)
       // - by any of the previous API Gateway writes if there's an explicit "select" flag within the event
-//      if((!fields && !results) || (event && event.data && event.data.select)) {
-     if((evt.is("gwreq") || evt.is("custom")) && (evt.isRead() || (event.data && event.data.select))) {
-        empid = (event.data && event.data.select) ? event.data.select.empid : null;
-        var s = mysqlClient.query("SELECT * FROM Employee3" + (empid ? " WHERE empid = ? LIMIT 1" : "") + ";", [empid], callback);
+     const select = evt.getDetail("select");
+     if((evt.is("gwreq") || evt.is("custom")) && (evt.isRead() || select)) {
+        const empid = select ? (select.empid + "") : null;
+        const s = mysqlClient.query("SELECT * FROM Employee3" + (empid ? " WHERE empid = ? LIMIT 1" : "") + ";", [empid], callback);
         apigw.add("query", s.sql, "select");
         return;
      }

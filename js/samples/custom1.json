@@ -1,7 +1,7 @@
 {
   "httpVerb": "PUT",
   "data": {
-    "empid": 123,
+    "empid": 789,
     "name": "Pierpoljacky",
     "details": {
       "field1": "value1",
