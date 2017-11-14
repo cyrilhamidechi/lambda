@@ -6,11 +6,12 @@ const evt = require('./event-normalizer'); // Lambda's input
 const apigw = require('./apigw-helper'); // Lambda's output
 
 
-apigw.init();
 var mysqlClient;
 
 
 exports.handler = (event, context, callback) => {
+
+  apigw.init();
 
   if(!event) {
     callback("Event is missing");
