@@ -1,4 +1,6 @@
-const async = require('async');
+'use strict';
+
+const wtf = require('async').waterfall;
 const getMysqlClient = require('mysql').createConnection;
 const mysqlCfg = require('./mysql.cfg');
 
@@ -37,7 +39,7 @@ exports.handler = (event, context, callback) => {
     apigw.stringifyBody  = false;
   }
 
-  async.waterfall([
+  wtf([
     function (callback)
     {
        console.log("Connecting to database " + mysqlCfg.database + "...");

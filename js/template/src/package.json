@@ -1,0 +1,8 @@
+{
+  "name": "my-lambda-js",
+  "version": "0.0.1",
+  "description": "My Lambda JS",
+  "main": "app.js",
+  "author": "Cyril Hamidechi",
+  "license": "MIT"
+}

@@ -1,0 +1,12 @@
+{
+  "name": "init-rds",
+  "version": "0.0.1",
+  "description": "Initialization RDS helper",
+  "main": "app.js",
+  "author": "Cyril Hamidechi",
+  "license": "MIT",
+  "dependencies": {
+    "async": "^2.6.0",
+    "mysql": "^2.15.0"
+  }
+}
