@@ -1,0 +1,8 @@
+{
+  "name": "upload-pic",
+  "version": "0.0.1",
+  "description": "Upload pic process",
+  "main": "app.js",
+  "author": "Cyril Hamidechi",
+  "license": "MIT"
+}
