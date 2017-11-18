@@ -4,8 +4,8 @@ const wtf = require('async').waterfall;
 const getMysqlClient = require('mysql').createConnection;
 const mysqlCfg = require('./mysql.cfg');
 
-const evt = require('./event-normalizer'); // Lambda's input
-const apigw = require('./apigw-helper'); // Lambda's output
+const evt = require('../../commons/event-normalizer'); // Lambda's input
+const apigw = require('../../commons/apigw-helper'); // Lambda's output
 
 
 var mysqlClient;
