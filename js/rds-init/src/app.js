@@ -2,7 +2,7 @@
 
 const wtf = require('async').waterfall;
 const getMysqlClient = require('mysql').createConnection;
-const mysqlCfg = require('./mysql.cfg');
+const mysqlCfg = require('../../commons/mysql.cfg');
 
 var mysqlClient;
 
@@ -10,6 +10,9 @@ exports.handler = (event, context, callback) => {
   wtf([
     function (callback)
     {
+       if(mysqlCfg.database) {
+         delete mysqlCfg.database;
+       }
        mysqlClient = getMysqlClient(mysqlCfg);
        callback();
     },

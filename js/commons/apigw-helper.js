@@ -1,7 +1,7 @@
 module.exports = {
-  init: function()
+  init: function(context)
   {
-    this.stringifyBody = true;
+    this.stringifyBody = !(context && context.noStringifyBody);
     this.res = {
       statusCode: 200,
       headers: {

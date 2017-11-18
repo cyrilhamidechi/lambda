@@ -2,25 +2,21 @@
 
 const wtf = require('async').waterfall;
 const getMysqlClient = require('mysql').createConnection;
-const mysqlCfg = require('./mysql.cfg');
+const mysqlCfg = require('../../commons/mysql.cfg');
 
 const evt = require('../../commons/event-normalizer'); // Lambda's input
 const apigw = require('../../commons/apigw-helper'); // Lambda's output
 
-
 var mysqlClient;
-
 
 exports.handler = (event, context, callback) => {
 
-  apigw.init();
-
-  if(!event) {
-    callback("Event is missing");
+  apigw.init(context);
+  if(!evt.normalize(event)) {
+    callback("The event normalization has failed");
     return;
   }
 
-  evt.normalize(event);
   if(evt.is("gwreq")) {
     if(event.pathParameters && event.pathParameters.empid) {
       evt.setDetail("empid", event.pathParameters.empid);
@@ -35,9 +31,6 @@ exports.handler = (event, context, callback) => {
   console.log('Normalized event:', JSON.stringify(evt.event, null, 2));
 //  console.log('Received contex:', JSON.stringify(context, null, 2));
 
-  if(context && context.noStringifyBody) {
-    apigw.stringifyBody  = false;
-  }
 
   wtf([
     function (callback)

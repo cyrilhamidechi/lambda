@@ -1,8 +1,11 @@
 module.exports = {
 
-
   normalize: function(event)
   {
+    if(!event) {
+      return false;
+    }
+
     this.event = {
       details: {}
     };

@@ -10,7 +10,7 @@ cd $lambda
 [ -d dist ] || mkdir dist
 rm -Rf dist/*
 
-cp -r ../commons ./dist
+cp -r ../commons/*.js ./dist
 
 cp src/*.js dist/
 cp src/package.json dist/
