@@ -22,7 +22,7 @@ exports.handler = (event, context, callback) => {
         callback("There's no MySql client");
         return;
       }
-      mysqlClient.query("CREATE DATABASE mydb;", (results, fields, err) => {
+      mysqlClient.query("CREATE DATABASE mydb;", (err, results, fields) => {
         callback(err, {results: results, fields: fields});
       });
     }

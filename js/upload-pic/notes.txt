@@ -1,0 +1,14 @@
+https://github.com/aheckmann/gm
+
+http://www.awsomeblog.com/analysing-exif-data-with-aws-batch/
+
+Exif:
+- https://github.com/exif-js/exif-js
+- https://github.com/gomfunkel/node-exif
+- https://github.com/bwindels/exif-parser
+- https://github.com/devongovett/exif-reader
+- https://github.com/nathanpeck/exiftool
+- https://github.com/tj/node-exif
+- https://github.com/Sobesednik/node-exiftool
+- https://github.com/titarenko/fast-exif
+- https://github.com/zhso/jpeg-exif
