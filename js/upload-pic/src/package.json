@@ -4,5 +4,10 @@
   "description": "Upload pic process",
   "main": "app.js",
   "author": "Cyril Hamidechi",
-  "license": "MIT"
+  "license": "MIT",
+  "dependencies": {
+    "async": "^2.6.0",
+    "exif": "^0.6.0",
+    "mysql": "^2.15.0"
+  }
 }

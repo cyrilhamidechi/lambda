@@ -12,3 +12,4 @@ Exif:
 - https://github.com/Sobesednik/node-exiftool
 - https://github.com/titarenko/fast-exif
 - https://github.com/zhso/jpeg-exif
+- http://owl.phy.queensu.ca/%7Ephil/exiftool/TagNames/PNG.html#TextualData

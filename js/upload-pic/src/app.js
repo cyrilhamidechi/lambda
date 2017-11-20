@@ -4,6 +4,8 @@ const wtf = require('async').waterfall;
 const getMysqlClient = require('mysql').createConnection;
 const mysqlCfg = require('./mysql.cfg');
 
+const ExifImage = require('exif').ExifImage;
+
 const evt = require('../../commons/event-normalizer'); // Lambda's input
 const apigw = require('../../commons/apigw-helper'); // Lambda's output
 
@@ -37,6 +39,21 @@ function writeDetails(details, callback)
   callback();*/
 }
 
+function getExif(callback)
+{
+  try {
+    new ExifImage({ image : '../../resources/pic1.jpg' }, function (error, exifData) {
+      if (error)
+        console.log('Error: '+error.message);
+      else
+        console.log(exifData); // Do something with your data!
+    });
+  } catch (error) {
+    console.log('Error: ' + error.message);
+  }
+  callback();
+}
+
 function reckognize(callback)
 {
   // should be in an SQS-lambda
@@ -68,7 +85,7 @@ exports.handler = (event, context, callback) => {
   evt.normalize(event);
 
   wtf([
-    function (callback)
+/*    function (callback)
     {
        mysqlClient = getMysqlClient(mysqlCfg);
        callback();
@@ -84,7 +101,8 @@ exports.handler = (event, context, callback) => {
     writeDetails,
     reckognize,
     writeSearch,
-    resize
+    resize*/
+    getExif
   ],
   function (err)
   {

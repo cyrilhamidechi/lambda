@@ -31,7 +31,7 @@ const event = {
           "arn":"arn:aws:s3:::mybucket"
         },
         "object":{  
-          "key":"HappyFace.jpg",
+          "key":"pic1.jpg",
           "size":1024,
           "eTag":"d41d8cd98f00b204e9800998ecf8427e",
           "versionId":"096fKKXTRTtl3on89fVO.nfljtsv6qko",
